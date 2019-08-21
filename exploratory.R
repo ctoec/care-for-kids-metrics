@@ -6,7 +6,12 @@ cat("\014")
 if("lubridate" %in% rownames(installed.packages()) == FALSE) {install.packages("lubridate"))}
 require("lubridate")
 
-calldata <- read.csv("", header=T)
+
+calldata = data.frame()
+for (file in list.files("original-data")){
+    calldata <- rbind(calldata, read.csv(file.path(".","original-data", file)))
+}
+
 names(calldata) <- unname(sapply(names(calldata), function(name) gsub(pattern = "[.]", replacement = "", x = name)))
 
 isEDT <- sapply(calldata$StartTime, function(row) grepl(pattern = "EDT", x = row))
