@@ -35,3 +35,8 @@ barplot(table(wday(calldata$StartTimeParsed)))
 hist(calldata$HoldTime)
 hist(calldata$TalkTime)
 
+callbynumber <- data.frame(aggregate(calldata$OriginatorDirectoryNumber, by=list(calldata$OriginatorDirectoryNumber), FUN=length))
+names(callbynumber) <- c("phonenumber", "calls")
+
+hist(callbynumber$calls)
+
