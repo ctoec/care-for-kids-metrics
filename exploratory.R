@@ -35,8 +35,42 @@ barplot(table(wday(calldata$StartTimeParsed)))
 hist(calldata$HoldTime)
 hist(calldata$TalkTime)
 
+# grouping by calls
 callbynumber <- data.frame(aggregate(calldata$OriginatorDirectoryNumber, by=list(calldata$OriginatorDirectoryNumber), FUN=length))
 names(callbynumber) <- c("phonenumber", "calls")
 
 hist(callbynumber$calls)
+
+# comparing groups (fake groups right now)
+set.seed(1311)
+controlgroup = data.frame(sample(callbynumber$calls, 300, replace = FALSE))
+names(controlgroup) <- c("calls")
+controlgroup$group <- "controlgroup"
+shapiro.test(controlgroup$calls) # p is less than .05 so ... not gaussian dist. maybe we remove outliers but that seems like valuable data
+
+rejectedpilot = data.frame(sample(callbynumber$calls, 300, replace = FALSE))
+names(rejectedpilot) <- c("calls")
+rejectedpilot$group <- "rejectedpilot"
+shapiro.test(rejectedpilot$group)
+
+
+acceptedpilot = data.frame(sample(callbynumber$calls, 300, replace = FALSE))
+names(acceptedpilot) <- c("calls")
+acceptedpilot$group <- "acceptedpilot"
+shapiro.test(acceptedpilot$calls)
+
+testtable <- rbind(controlgroup, rejectedpilot)
+testtable <- rbind(testtable, acceptedpilot)
+
+boxplot(testtable$calls~testtable$group, col= rainbow(3))
+
+kruskal.test(testtable$calls~testtable$group) # seems correct, there should be no difference
+
+#sanity check
+controlgroup$calls = 1
+controlgroup$group = "other"
+testtablesanity <- rbind(testtable, controlgroup)
+
+kruskal.test(testtablesanity$calls~testtablesanity$group)
+
 
