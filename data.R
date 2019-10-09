@@ -82,3 +82,34 @@ pilot_participants <- raw_pilot_participants %>%
 
 contacted <- read_csv("original-data/contacted.csv", col_types = list(col_character())) %>%
   unique()
+
+raw_docuclass <- read_csv(
+  "original-data/C4K Pilot Data Summary - raw-reporting-db-export.csv",
+  col_types = cols(
+    `Case ID` = col_character(),
+    `Doc Type` = col_factor(levels = c(
+      "NA – Application",
+      "RP – Redetermination",
+      "SP – Parent Supporting Document",
+      "PS – Provider Supporting Document",
+      "PR – W-9",
+      "DR – DCFR form",
+      "FR – FRED Document",
+      "AC – ACAP Document"
+    )),
+    `Archived At` = col_datetime(format = "%Y-%m-%d %H:%M:%S %z"),
+    Phone = col_character(),
+    ExportedAt = col_datetime(format = "%Y-%m-%d %H:%M:%S %z"),
+    ExportTime = col_time(),
+    Source = col_factor(levels = c("Faxes", "Emails", "Scans")),
+    `Document ID` = col_character()
+  )
+)
+
+docuclass <- raw_docuclass %>%
+  transmute(
+    family_id = `Case ID`,
+    type = `Doc Type`,
+    date = as_date(ExportedAt),
+    source = Source
+  )
