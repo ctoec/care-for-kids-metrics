@@ -1,8 +1,10 @@
 source("data.r")
 
+IGNORE_DOC_TYPE <- 1
+
 redet_receipts <- redets %>%
   filter(recert_date == as_date("2019-10-31")) %>%
-  inner_join(filter(docuclass, type == "RP – Redetermination"), by = "family_id") %>%
+  inner_join(filter(docuclass, type == "RP – Redetermination" | 1==IGNORE_DOC_TYPE), by = "family_id") %>%
   group_by(family_id) %>%
   summarize(first_receipt = min(date)) %>%
   left_join(mutate(contacted, contacted = TRUE), by = "family_id") %>%
