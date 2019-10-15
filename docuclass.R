@@ -45,9 +45,7 @@ receipts_with_aftermath %>%
   group_by(contacted) %>%
   summarize(n = n(), mean(doc_count))
 
-m1 <- lm(call_count ~ contacted, data = receipts_with_aftermath)
-summary(m1)
+t.test(call_count ~ contacted, data = receipts_with_aftermath)
 
-m2 <- lm(doc_count ~ contacted, data = receipts_with_aftermath)
-summary(m2)
+t.test(doc_count ~ contacted, data = receipts_with_aftermath)
 

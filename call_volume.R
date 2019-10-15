@@ -66,19 +66,16 @@ redets_by_pilot_participation <- redets %>%
   summarize(call_count = sum(!is.na(date))) %>%
   left_join(mutate(contacted, contacted = TRUE), by = "family_id") %>%
   left_join(mutate(pilot_participants, opted_in = TRUE), by = "family_id") %>%
-  replace_na(list(contacted = FALSE, opted_in = FALSE)) %>%
-  mutate(group = contacted + opted_in)
+  replace_na(list(contacted = FALSE, opted_in = FALSE))
 
 redets_by_pilot_participation %>%
-  group_by(group) %>%
+  group_by(contacted, opted_in) %>%
   summarize(n = n(), mean(call_count))
 
 redets_by_pilot_participation %>%
   group_by(contacted) %>%
   summarize(n = n(), mean(call_count))
 
-m <- lm(call_count ~ contacted, data = redets_by_pilot_participation)
-
-summary(m)
+t.test(call_count ~ contacted, data = redets_by_pilot_participation)
 
   
